@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- Modified: 01-Jul-2026 (Bob Heckel) -->
+<!-- License: Copyright (c) 2026 Robert S. Heckel Jr. -->
+<title>Varṇamālā Flashcards</title>
+<link rel="icon" type="image/png" href="/favicon_flashcards.ico">
+<link rel="manifest" href="manifest_flashcards.json">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap');
+
+  :root{
+    --ink: #e8dfc8;
+    --paper: #14110d;
+    --paper2: #1d1812;
+    --rule: #4a3f2f;
+    --accent: #c97a5d;
+    --accent2: #7fa389;
+    --muted: #8a7d63;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse at top, rgba(255,255,255,0.04), transparent 60%),
+      var(--paper);
+    color:var(--ink);
+    font-family:'EB Garamond', serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+  }
+
+  a{
+    color: var(--accent);
+    text-decoration: underline;
+  }
+  a:hover{
+    color: var(--ink);
+  }
+  a:visited{
+    color: var(--accent);
+  }
+
+  .wrap{
+    width:100%;
+    max-width:480px;
+  }
+
+  .masthead{
+    text-align:center;
+    margin-bottom:18px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    font-family:'Noto+Sans+Devanagari', sans-serif;
+    font-size:11px;
+    color:var(--muted);
+  }
+  .masthead .rule{
+    width:100%;
+    height:1px;
+    background:var(--rule);
+    margin:8px 0;
+  }
+
+  .scope-row{
+    display:flex;
+    gap:8px;
+    justify-content:center;
+    margin-bottom:16px;
+    flex-wrap:wrap;
+  }
+  .chip{
+    font-family:'Noto+Sans+Devanagari', sans-serif;
+    font-size:12px;
+    letter-spacing:0.04em;
+    padding:6px 14px;
+    border:1px solid var(--rule);
+    border-radius:100px;
+    background:transparent;
+    color:var(--ink);
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .chip.active{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:var(--paper);
+  }
+
+  .card{
+    position:relative;
+    background:var(--paper2);
+    border:1px solid var(--rule);
+    border-radius:6px;
+    min-height:340px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:44px 20px 36px 20px;
+    cursor:pointer;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.02), 0 8px 28px -16px rgba(0,0,0,0.6);
+  }
+  .card::before{
+    content:'';
+    position:absolute;
+    top:14px; left:14px; right:14px; bottom:14px;
+    border:1px solid var(--rule);
+    border-radius:3px;
+    pointer-events:none;
+    opacity:0.5;
+  }
+
+  .progress{
+    font-family:'Noto+Sans+Devanagari', sans-serif;
+    font-size:11px;
+    letter-spacing:0.1em;
+    color:var(--muted);
+    position:absolute;
+    top:18px;
+    left:24px;
+  }
+  .direction-tag{
+    font-family:'Noto+Sans+Devanagari', sans-serif;
+    font-size:11px;
+    letter-spacing:0.1em;
+    color:var(--muted);
+    position:absolute;
+    top:18px;
+    right:24px;
+    text-transform:uppercase;
+  }
+
+  /* FLUID TYPOGRAPHY: Scales down gracefully depending on screen width */
+  .deva{
+    font-family:'Noto Sans Devanagari', serif;
+    font-size: min(24vw, 120px); 
+    line-height:1;
+    color:var(--ink);
+    text-align: center;
+  }
+  .iast{
+    font-family:'EB Garamond', serif;
+    font-style:italic;
+    font-size: min(10vw, 38px);
+    color:var(--ink);
+    text-align: center;
+  }
+
+  .tattva-tag{
+    margin:10px auto 0;
+    font-family:'Noto+Sans+Devanagari', sans-serif;
+    font-size:11px;
+    letter-spacing:0.05em;
+    color:var(--accent);
+    text-align:center;
+    max-width:280px;
+    word-wrap: break-word; /* Prevents long translations breaking the card border */
+  }
+  .tattva-tag.empty{
+    color:var(--rule);
+  }
+
+  .hint{
+    margin-top:32px;
+    font-family:'Noto+Sans+Devanagari', sans-serif;
+    font-size:10px;
+    letter-spacing:0.08em;
+    color:var(--muted);
+    text-transform:uppercase;
+  }
+
+  .answer-area{
+    margin-top:22px;
+    text-align:center;
+    min-height:64px;
+    width: 100%;
+  }
+  .answer-area .deva-ans{
+    font-family:'Noto Sans Devanagari', serif;
+    font-size: min(16vw, 64px);
+    line-height:1;
+  }
+  .answer-area .iast-ans{
+    font-family:'EB Garamond', serif;
+    font-style:italic;
+    font-size: min(10vw, 44px);
+    color:var(--accent2);
+    margin-top:4px;
+  }
+
+  .controls{
+    display:flex;
+    gap:10px;
+    margin-top:18px;
+  }
+  .btn{
+    flex:1;
+    font-family:'Noto+Sans+Devanagari', sans-serif;
+    font-size:13px;
+    letter-spacing:0.04em;
+    padding:14px; /* Tappable targets are larger on mobile screens */
+    border-radius:4px;
+    border:1px solid var(--rule);
+    background:var(--paper);
+    color:var(--ink);
+    cursor:pointer;
+    transition: transform .08s ease, background .15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:active{ transform: scale(0.97); }
+  .btn.know{ border-color:var(--accent2); color:var(--accent2); }
+  .btn.know:hover{ background: rgba(127,163,137,0.12); }
+  .btn.dontknow{ border-color:var(--accent); color:var(--accent); }
+  .btn.dontknow:hover{ background: rgba(201,122,93,0.12); }
+
+  .stats{
+    margin-top:16px;
+    display:flex;
+    justify-content:space-between;
+    font-family:'Noto+Sans+Devanagari', sans-serif;
+    font-size:12px;
+    color:var(--muted);
+  }
+  .stats span b{ color:var(--ink); }
+
+  .reset{
+    display:block;
+    margin:14px auto 0;
+    font-family:'Noto+Sans+Devanagari', sans-serif;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--muted);
+    background:none;
+    border:none;
+    cursor:pointer;
+    text-decoration:underline;
+    padding: 8px;
+  }
+
+  /* Advanced optimization for older or ultra-narrow smartphones */
+  @media (max-width:380px){
+    body { padding: 8px; }
+    .card { min-height: 300px; padding-top: 50px; }
+    .progress, .direction-tag { font-size: 10px; top: 14px; }
+    .progress { left: 16px; }
+    .direction-tag { right: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="masthead">
+  <!--
+  "Varṇamālā" means "garland of letters" (varṇa = letter/sound, mālā = garland) — it's the traditional 
+  term for the Sanskrit alphabet as a whole, vowels and consonants together.
+
+  "Devanāgarī akṣaras" means "the akṣaras (syllabic letters/characters) of the Devanāgarī 
+  script" — devanāgarī being the script itself, and akṣara being the Sanskrit term for a written 
+  letter/syllable.
+
+  Tattva attributions per Lakshmanjoo Academy
+  -->
+    <a href="https://s3.amazonaws.com/kajabi-storefronts-production/file-uploads/sites/2147649306/downloads/c78cf8-5243-7fdb-508d-8db27ffa73__12_SS_Tattvas_chart_with_Letters.pdf" style="text-decoration:none; color:inherit;">Varṇamālā</a>
+    <a href="https://s3.amazonaws.com/kajabi-storefronts-production/file-uploads/sites/2147649306/downloads/371263-de0-430-5d3-a2670d2a1a21__17_Three_Visargas_a_ah_ha.pdf" style="text-decoration:none; color:inherit;">· Devanāgarī Akṣaras</a>
+    <div class="rule"></div>
+  </div>
+
+  <div class="scope-row">
+    <button class="chip active" data-scope="all">All</button>
+    <button class="chip" data-scope="vowels">Vowels</button>
+    <button class="chip" data-scope="consonants">Consonants</button>
+  </div>
+
+  <div class="card" id="card">
+    <div class="progress" id="progress">1 / 1</div>
+    <div class="direction-tag" id="directionTag">deva → iast</div>
+
+    <div id="prompt" style="text-align:center; width: 100%;"></div>
+
+    <div class="hint" id="hint">tap card to reveal</div>
+
+    <div class="answer-area" id="answerArea" style="display:none;"></div>
+  </div>
+
+  <div class="controls" id="controls" style="display:none;">
+    <button class="btn dontknow" id="btnNo">Missed it</button>
+    <button class="btn know" id="btnYes">Knew it</button>
+  </div>
+
+  <div class="stats">
+    <span>Knew: <b id="statKnow">0</b></span>
+    <span>Missed: <b id="statMiss">0</b></span>
+    <span>Left: <b id="statLeft">0</b></span>
+  </div>
+
+  <button class="reset" id="resetBtn">restart deck</button>
+</div>
+
+<script>
+const VOWELS = [
+  ["अ","a","anuttara cit (consciousness) | 37th Tattva"], ["आ","ā","ānanda (bliss) | PARA VISARGA"],
+  ["इ","i","icchā (unagitated - will)"], ["ई","ī","īśāna (agitated - will)"],
+  ["उ","u","unmeṣa (unagitated - knowledge)"], ["ऊ","ū","ūnata (agitated - knowledge)"],
+  ["ऋ","ṛ","anāśrita śiva (about to rise)"], ["ॠ","ṝ","anāśrita śiva (about to rise)"], ["ऌ","ḷ","anāśrita śiva (already risen)"], ["ॡ","ḹ","anāśrita śiva (already risen)"],
+  ["ए","e","kriyā śakti (action - unclear)"], ["ऐ","ai","kriyā śakti (action - clear)"], ["ओ","o","kriyā śakti (action - clearer)"], ["औ","au","kriyā śakti (action - clearest)"],
+  ["अं","ṃ ","anusvāra/śiva bindu"], ["अः","aḥ","visarga/śiva-śakti bindu | PĀRĀPĀRĀ VISARGA"]
+];
+const CONSONANTS = [
+  ["श","śa","śuddhavidyā (pure knowledge i-ness/this-ness)"], ["ष","ṣa","īśvara (lordship this-ness/i-ness)"], ["स","sa","sadāśiva (eternal Śiva i-ness/i-ness)"], ["ह","ha",'<a href="shakti.png">śakti/prāṇa (power)</a> | Viśuddha region | APARĀ VISARGA'], ["क्ष","kṣa","N/A"], 
+  ["व","va","māyā (illusion, veiling power) | Svādhiṣṭhāna region"],
+  ["य","ya","niyati (Kañcukas - limited space / causal restriction) | Anāhata region"], ["ल","la","kāla (Kañcukas - limited time) | Mūlādhāra region"], ["य","ya","rāga (Kañcukas - limited interest) | Anāhata region"], ["र","ra","vidyā (Kañcukas - limited knowledge) | Maṇipūra region"], ["ल","la","kalā (Kañcukas - limited action) | Mūlādhāra region"],
+  ["प","pa","manas (mind)"], ["फ","pha","ahaṅkāra (ego, I-maker)"], ["ब","ba","buddhi (intellect)"], ["भ","bha","prakṛti (primordial nature)"],["म","ma","puruṣa (individual soul)"], 
+  ["त","ta","ghrāṇa (Jñānendriyas - nose)"], ["थ","tha","rasanā (Jñānendriyas - tongue, tasting)"], ["द","da","cakṣu (Jñānendriyas - eyes)"], ["ध","dha","tvaca (Jñānendriyas - skin)"], ["न","na","srotra (Jñānendriyas - ear)"],
+  ["ट","ṭa","upastha (Karmendriyas - sexual organ)"], ["ठ","ṭha","pāyu (Karmendriyas - anus)"], ["ड","ḍa","pāda (Karmendriyas - feet)"], ["ढ","ḍha","pāṇi (Karmendriyas - hands)"], ["ण","ṇa","vāk (Karmendriyas - tongue, producing sound)"],
+  ["च","ca","gandha (Tanmātras - smell)"], ["छ","cha","rasa (Tanmātras - taste)"], ["ज","ja","rūpa (Tanmātras - form)"], ["झ","jha","sparśa (Tanmātras - touch)"], ["ञ","ña","śabda (Tanmātras - sound)"],
+  ["क","ka","pṛthvī (Mahābhutas - earth)"], ["ख","kha","jala (Mahābhutas - water)"], ["ग","ga","agni (Mahābhutas - fire)"], ["घ","gha","vāyu (Mahābhutas - air)"], ["ङ","ṅa","ākāśa (Mahābhutas - space/ether)"]
+];
+
+let deck = [];
+let idx = 0;
+let knowCount = 0;
+let missCount = 0;
+let revealed = false;
+let currentScope = "all";
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildDeck(scope){
+  let source;
+  if(scope === "vowels") source = VOWELS;
+  else if(scope === "consonants") source = CONSONANTS;
+  else source = VOWELS.concat(CONSONANTS);
+
+  const cards = source.map(([deva, iast, tattva]) => {
+    const direction = Math.random() < 0.5 ? "d2i" : "i2d";
+    return { deva, iast, tattva, direction };
+  });
+  return shuffle(cards);
+}
+
+function startDeck(scope){
+  currentScope = scope;
+  deck = buildDeck(scope);
+  idx = 0;
+  knowCount = 0;
+  missCount = 0;
+  revealed = false;
+  renderCard();
+}
+
+function renderCard(){
+  const promptEl = document.getElementById('prompt');
+  const answerArea = document.getElementById('answerArea');
+  const hint = document.getElementById('hint');
+  const controls = document.getElementById('controls');
+  const directionTag = document.getElementById('directionTag');
+  const progress = document.getElementById('progress');
+
+  answerArea.style.display = 'none';
+  answerArea.innerHTML = '';
+  controls.style.display = 'none';
+  hint.style.display = 'block';
+  hint.textContent = 'tap card to reveal';
+  revealed = false;
+
+  progress.textContent = (idx+1) + " / " + deck.length;
+
+  if(idx >= deck.length){
+    promptEl.innerHTML = '<div style="font-family:\'EB Garamond\',serif;font-size:22px;text-align:center;max-width:280px;margin: 0 auto;">Deck complete.<br>Tap "restart deck" to go again.</div>';
+    directionTag.textContent = '';
+    document.getElementById('hint').style.display = 'none';
+    updateStats();
+    return;
+  }
+
+  const c = deck[idx];
+  const tattvaHtml = c.tattva
+    ? '<div class="tattva-tag">Tattva: ' + c.tattva + '</div>'
+    : '<div class="tattva-tag empty">Tattva: —</div>';
+
+  if(c.direction === "d2i"){
+    directionTag.textContent = 'deva → iast';
+    promptEl.innerHTML = '<div class="deva">' + c.deva + '</div>' + tattvaHtml;
+  } else {
+    directionTag.textContent = 'iast → deva';
+    promptEl.innerHTML = '<div class="iast">' + c.iast + '</div>' + tattvaHtml;
+  }
+  updateStats();
+}
+
+function revealAnswer(){
+  if(revealed || idx >= deck.length) return;
+  revealed = true;
+  const c = deck[idx];
+  const answerArea = document.getElementById('answerArea');
+  const controls = document.getElementById('controls');
+  const hint = document.getElementById('hint');
+
+  if(c.direction === "d2i"){
+    answerArea.innerHTML = '<div class="iast-ans">' + c.iast + '</div>';
+  } else {
+    answerArea.innerHTML = '<div class="deva-ans">' + c.deva + '</div>';
+  }
+  answerArea.style.display = 'block';
+  controls.style.display = 'flex';
+  hint.style.display = 'none';
+}
+
+function nextCard(known){
+  if(known) knowCount++; else missCount++;
+  idx++;
+  renderCard();
+}
+
+function updateStats(){
+  document.getElementById('statKnow').textContent = knowCount;
+  document.getElementById('statMiss').textContent = missCount;
+  document.getElementById('statLeft').textContent = Math.max(deck.length - idx, 0);
+}
+
+document.getElementById('card').addEventListener('click', revealAnswer);
+document.getElementById('btnYes').addEventListener('click', (e)=>{ e.stopPropagation(); nextCard(true); });
+document.getElementById('btnNo').addEventListener('click', (e)=>{ e.stopPropagation(); nextCard(false); });
+document.getElementById('resetBtn').addEventListener('click', ()=> startDeck(currentScope));
+
+document.querySelectorAll('.chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    startDeck(chip.dataset.scope);
+  });
+});
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('Service Worker registered', reg))
+      .catch(err => console.error('Service Worker failed', err));
+  });
+}
+startDeck("all");
+</script>
+</body>
+</html>
