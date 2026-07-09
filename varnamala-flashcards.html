@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#14110d">
-<!-- Modified: 05-Jul-2026 (Bob Heckel) -->
+<!-- Modified: 09-Jul-2026 (Bob Heckel) -->
 <!-- License: Copyright (c) 2026 Robert S. Heckel Jr. -->
 <title>Varṇamālā Flashcards</title>
 <link rel="icon" type="image/png" href="/favicon_flashcards.ico">
@@ -268,7 +268,7 @@
   script" — devanāgarī being the script itself, and akṣara being the Sanskrit term for a written 
   letter/syllable.
 
-  Tattva attributions per Lakshmanjoo Academy
+  Tattva attributions per Lakshmanjoo Academy:
   -->
     <a href="https://s3.amazonaws.com/kajabi-storefronts-production/file-uploads/sites/2147649306/downloads/c78cf8-5243-7fdb-508d-8db27ffa73__12_SS_Tattvas_chart_with_Letters.pdf" style="text-decoration:none; color:inherit;">Varṇamālā</a>
     <a href="https://s3.amazonaws.com/kajabi-storefronts-production/file-uploads/sites/2147649306/downloads/371263-de0-430-5d3-a2670d2a1a21__17_Three_Visargas_a_ah_ha.pdf" style="text-decoration:none; color:inherit;">· Devanāgarī Akṣaras</a>
@@ -316,7 +316,7 @@ const VOWELS = [
   ["अं","ṃ ","anusvāra/śiva bindu"], ["अः","aḥ","visarga/śiva-śakti bindu | PĀRĀPĀRĀ VISARGA"]
 ];
 const CONSONANTS = [
-  ["श","śa","śuddhavidyā (pure knowledge i-ness/this-ness)"], ["ष","ṣa","īśvara (lordship this-ness/i-ness)"], ["स","sa","sadāśiva (eternal Śiva i-ness/i-ness)"], ["ह","ha",'<a href="shakti.png">śakti/prāṇa (power)</a> | APARĀ VISARGA'], ["क्ष","kṣa","N/A"], 
+  ["श","śa","śuddhavidyā (pure knowledge i-ness/this-ness)"], ["ष","ṣa","īśvara (lordship this-ness/i-ness)"], ["स","sa","sadāśiva (eternal Śiva i-ness/i-ness)"], ["ह","ha",'<a href="shakti.png" target="_blank" rel="noopener">śakti/prāṇa (power)</a> | APARĀ VISARGA'], ["क्ष","kṣa","N/A"], 
   ["व","va","māyā (illusion, veiling power, Ānavamala - limited being)"],
   ["य","ya","niyati (Kañcukas - limited space / causal restriction)"], ["ल","la","kāla (Kañcukas - limited time)"], ["य","ya","rāga (Kañcukas - limited interest)"], ["र","ra","vidyā (Kañcukas - limited knowledge)"], ["ल","la","kalā (Kañcukas - limited action)"],
   ["प","pa","manas (mind)"], ["फ","pha","ahaṅkāra (ego, I-maker)"], ["ब","ba","buddhi (intellect)"], ["भ","bha","prakṛti (primordial nature)"],["म","ma","puruṣa (individual soul)"], 
@@ -455,6 +455,13 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.error('Service Worker failed', err));
   });
 }
+
+document.getElementById('answerArea').addEventListener('click', (e) => {
+  if (e.target.tagName === 'A') {
+    // Stop the card from thinking it was a standard card flip tap
+    e.stopPropagation(); 
+  }
+});
 startDeck("all");
 </script>
 </body>
