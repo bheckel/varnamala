@@ -1,10 +1,11 @@
-// Modified: 09-Jul-2026 (Bob Heckel)
-const CACHE_NAME = 'varnamala-v2';
+// Modified: 15-Jul-2026 (Bob Heckel)
+const CACHE_NAME = 'varnamala-v4';
 const ASSETS = [
   '/',
   '/varnamala-flashcards.html',
   '/manifest_flashcards.json',
   '/shakti.png',
+  '/tattvas_sanskrit.png',
   '/favicon_flashcards.ico'
 ];
 
