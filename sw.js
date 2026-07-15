@@ -1,5 +1,5 @@
 // Modified: 15-Jul-2026 (Bob Heckel)
-const CACHE_NAME = 'varnamala-v4';
+const CACHE_NAME = 'varnamala-v5';
 const ASSETS = [
   '/',
   '/varnamala-flashcards.html',
@@ -15,8 +15,39 @@ self.addEventListener('install', (e) => {
   );
 });
 
-self.addEventListener('fetch', (e) => {
-  e.respondWith(
-    caches.match(e.request).then((response) => response || fetch(e.request))
+// Clean up old caches when the new one activates
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
+      );
+    })
   );
 });
+
+self.addEventListener('fetch', (e) => {
+  const url = new URL(e.request.url);
+
+  // 1. ONLY intercept local requests. 
+  // If the request is to an external domain, let it pass straight through.
+  if (url.origin !== self.location.origin) {
+    return; 
+  }
+
+  // 2. Only intercept standard GET requests (ignores chrome extensions, etc.)
+  if (e.request.method !== 'GET') {
+    return;
+  }
+
+  e.respondWith(
+    caches.match(e.request).then((response) => {
+      return response || fetch(e.request);
+    })
+  );
+});
+
