@@ -1,5 +1,5 @@
 // Modified: 15-Jul-2026 (Bob Heckel)
-const CACHE_NAME = 'varnamala-v5';
+const CACHE_NAME = 'varnamala-v6';
 const ASSETS = [
   '/',
   '/varnamala-flashcards.html',
